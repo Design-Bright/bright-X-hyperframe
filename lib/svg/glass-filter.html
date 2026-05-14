@@ -1,0 +1,20 @@
+<!-- ════════════════════════════════════════════════════════════════════════
+     Bright Liquid Glass — SVG displacement filter (optional enhancement)
+     ────────────────────────────────────────────────────────────────────────
+     Paste this snippet once near the top of <body> in any composition that
+     uses .glass-card.has-liquid. Adds organic edge refraction on top of the
+     base frosted-glass effect from lib/styles/glass.css.
+
+     Tune scale="6" up for more wobble (8–12) or down for subtler (2–4).
+     Tune baseFrequency for the wobble's wavelength — lower = bigger waves.
+     ════════════════════════════════════════════════════════════════════════ -->
+<svg width="0" height="0" style="position:absolute; pointer-events:none;"
+     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <filter id="bright-liquid-glass" color-interpolation-filters="sRGB"
+          x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise"
+                       scale="6" xChannelSelector="R" yChannelSelector="G"/>
+    <feGaussianBlur stdDeviation="0.6"/>
+  </filter>
+</svg>

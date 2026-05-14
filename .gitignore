@@ -1,0 +1,16 @@
+# HyperFrames runtime caches
+.hyperframes/
+.thumbnails/
+.waveform-cache/
+
+# Render outputs
+renders/
+
+# VibeVoice opt-in (heavy — installed per machine via scripts/vibevoice/setup.sh)
+.venv-vibevoice/
+vendor/
+
+# macOS / editor cruft
+.DS_Store
+*.swp
+*.swo

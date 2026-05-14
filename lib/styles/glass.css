@@ -1,0 +1,79 @@
+/* ════════════════════════════════════════════════════════════════════════
+   Bright Glass — reusable frosted-glass surface utility
+   ────────────────────────────────────────────────────────────────────────
+   For cards, banners, panels, and any container that sits on top of the
+   dot-wave background. Renders cleanly in Chromium (HyperFrames target).
+
+   USAGE:
+     <link rel="stylesheet" href="../lib/styles/glass.css">
+     <div class="glass-card">...content...</div>
+
+   VARIANTS (combine with .glass-card):
+     .glass-card                  ← default, light-bg, medium opacity
+     .glass-card.is-solid         ← more opaque (use when text is dense)
+     .glass-card.is-subtle        ← barely-there hint of glass
+     .glass-card.on-dark          ← inverted for dark backgrounds (#104023)
+
+   LIQUID WOBBLE (optional, adds organic edge refraction):
+     1. Paste contents of lib/svg/glass-filter.html at top of <body>
+     2. Add .has-liquid to the card: <div class="glass-card has-liquid">
+
+   TOKENS — change these CSS vars to retune across all glass surfaces:
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Base surface */
+  --glass-bg:           rgba(255, 255, 255, 0.45);
+  --glass-blur:         24px;
+  --glass-saturate:     180%;
+
+  /* Edge treatment */
+  --glass-border:       1px solid rgba(255, 255, 255, 0.6);
+  --glass-radius:       28px;
+  --glass-highlight:    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  /* Drop shadow — tinted with Bright forest green for brand depth */
+  --glass-shadow:       0 8px 32px rgba(15, 35, 25, 0.08);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+          backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: var(--glass-border);
+  border-radius: var(--glass-radius);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  will-change: backdrop-filter;
+}
+
+/* ─── Variants ─────────────────────────────────────────────────────────── */
+
+.glass-card.is-solid {
+  --glass-bg:    rgba(255, 255, 255, 0.62);
+  --glass-blur:  18px;
+}
+
+.glass-card.is-subtle {
+  --glass-bg:        rgba(255, 255, 255, 0.22);
+  --glass-blur:      30px;
+  --glass-border:    1px solid rgba(255, 255, 255, 0.4);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --glass-shadow:    0 4px 18px rgba(15, 35, 25, 0.05);
+}
+
+.glass-card.on-dark {
+  --glass-bg:        rgba(255, 255, 255, 0.08);
+  --glass-border:    1px solid rgba(255, 255, 255, 0.15);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  --glass-shadow:    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.glass-card.on-dark.is-solid {
+  --glass-bg:        rgba(255, 255, 255, 0.14);
+}
+
+/* ─── Optional liquid wobble ───────────────────────────────────────────── */
+/* Requires the SVG filter from lib/svg/glass-filter.html in the document. */
+.glass-card.has-liquid {
+  filter: url(#bright-liquid-glass);
+}

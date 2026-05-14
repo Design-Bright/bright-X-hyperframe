@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <link rel="stylesheet" href="../lib/fonts/figtree.css">
+  <script src="../lib/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'Figtree', system-ui, sans-serif;
+    }
+
+    #content-wrap {
+      position: absolute;
+      inset: 0;
+      will-change: opacity;
+    }
+
+    #s1-section {
+      position: absolute; top: 88px; left: 96px;
+      font-size: 15px; font-weight: 300; font-style: italic;
+      color: #838A96;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      opacity: 0; z-index: 12;
+    }
+
+    #s1-headline {
+      position: absolute; top: 50%; left: 96px;
+      transform: translateY(-50%);
+      font-size: 280px; font-weight: 700; color: #000;
+      letter-spacing: -0.03em; line-height: 1.0;
+      z-index: 15;
+    }
+    .word { display: inline-block; overflow: visible; }
+    .word > span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(60px);
+      will-change: transform, opacity;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"
+       data-composition-id="shot-1-title"
+       data-start="0" data-duration="3"
+       data-width="1920" data-height="1080">
+
+    <div id="content-wrap">
+      <div id="s1-section">INTRODUCING</div>
+      <div id="s1-headline">
+        <span class="word"><span>Brokk.</span></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    // Section title fade
+    tl.fromTo('#s1-section', { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out' }, 0);
+
+    // Headline word-rise
+    tl.to('#s1-headline .word > span', { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, 0.3);
+
+    // Universal exit fade-out
+    tl.to('#content-wrap', { opacity: 0, duration: 1.0, ease: 'power2.inOut' }, 2.0);
+
+    window.__timelines['shot-1-title'] = tl;
+  </script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <link rel="stylesheet" href="lib/fonts/figtree.css">
+  <script src="lib/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      background: #FFFFFF;
+      font-family: 'Figtree', system-ui, sans-serif;
+    }
+
+    /* ═══ BRAND-LOCKED LAYER (static — persists across all content shots) ═══ */
+
+    #brand-grid { display: none; }
+
+    /* Dot-wave background — canvas grid of dots with a moving brightness wave */
+    #bg-wrap { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+    #bg-dots {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      display: block;
+    }
+
+    #brand-logo {
+      position: absolute;
+      bottom: 56px; right: 64px;
+      width: 194px; height: 40px;
+      opacity: 1;
+      z-index: 30;
+    }
+    #brand-logo svg { width: 100%; height: 100%; display: block; }
+
+    .shot-wrap { position: absolute; inset: 0; z-index: 10; will-change: opacity; }
+  </style>
+</head>
+<body>
+  <div id="root"
+       data-composition-id="main"
+       data-start="0"
+       data-duration="25.44"
+       data-width="1920" data-height="1080"
+       data-note="6 shots + outro. Total 25.44s (extended to fit VibeVoice VO).">
+
+    <!-- ═══ BACKGROUND MUSIC — locked random pick (summer-hip-hop)
+         Selected from Assets/Music/. Will NOT change unless you ask.
+         To swap: replace lib/music/<filename>.mp3 and update the src below. -->
+    <audio id="bg-music"
+           src="lib/music/summer-hip-hop_main-full.mp3"
+           data-start="0"
+           data-duration="25.44"
+           data-track-index="0"
+           data-volume="0.5"
+           preload="auto"></audio>
+
+    <!-- ═══ VOICEOVER — VibeVoice-Realtime-0.5B (Carter). Re-generate:
+         npm run tts   →  ~22.5s, writes lib/voiceover/narration.wav
+         Requires one-time `npm run setup` first (see scripts/vibevoice/README.md). -->
+    <audio id="voiceover"
+           src="lib/voiceover/narration.wav"
+           data-start="0"
+           data-duration="22.6"
+           data-track-index="4"
+           data-volume="1.0"
+           preload="auto"></audio>
+
+    <!-- ═══ BRAND-LOCKED LAYER ═══ -->
+    <div id="brand-grid"></div>
+    <div id="bg-wrap">
+      <canvas id="bg-dots" width="1920" height="1080"></canvas>
+    </div>
+    <div id="brand-logo">
+      <svg viewBox="0 0 1080 312" preserveAspectRatio="xMaxYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bright-logo-gradient-launch" x1="204.5" y1="219.5" x2="204.5" y2="37.7" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#138241"/>
+            <stop offset="1" stop-color="#17c95f"/>
+          </linearGradient>
+        </defs>
+        <path fill="#0e1e14" d="M680.8,111.6h15.7v108h-31.3v-108h15.7ZM608.1,111.6c-12.5,0-23.8,5.1-32,13.3-8.2,8.2-13.3,19.5-13.3,32v33.5s0,29.2,0,29.2h31.3v-58.4h0v-4.3c0-3.8,1.6-7.3,4.1-9.8s6-4,9.8-4,7.3,1.5,9.8,4c2.5,2.5,4.1,6,4.1,9.8h31.4c0-12.5-5.1-23.8-13.3-32-8.2-8.2-19.5-13.3-32-13.3ZM534.8,127.8c10.1,10.1,16.3,23.9,16.3,39.3s-6.2,29.2-16.3,39.3c-10.1,10.1-23.9,16.3-39.3,16.3s-29.2-6.2-39.3-16.3c-10-10-16.3-23.9-16.3-39.3s0-1.4,0-2.1c0-.7,0-1.4.1-2.1,0-.5-.1-1.1-.1-1.6,0-.5,0-1.1,0-1.6v-90.8h31.3v48.3c3.7-1.8,7.5-3.2,11.6-4.1s8.3-1.4,12.6-1.4c15.3,0,29.2,6.2,39.3,16.3ZM519.7,167.1c0-6.7-2.7-12.7-7.1-17.1-4.4-4.4-10.4-7.1-17.1-7.1s-12.7,2.7-17.1,7.1c-4.4,4.4-7.1,10.4-7.1,17.1s2.7,12.7,7.1,17.1c4.4,4.4,10.4,7.1,17.1,7.1s12.7-2.7,17.1-7.1c4.4-4.4,7.1-10.4,7.1-17.1ZM927.3,124.1c-9.4-8-22.3-12.5-36.6-12.5s-7.2.4-10.6,1.1c-3.4.7-6.7,1.8-9.8,3.1v-46.9h-31.3v90.3c0,.3,0,.6,0,.9,0,.3,0,.6,0,.9,0,.4,0,.8,0,1.2,0,.4,0,.8,0,1.2v56.2h31.3v-58.4c0-5.6,2.3-10.6,5.9-14.3,3.7-3.7,8.7-5.9,14.3-5.9s10.7,2.3,14.5,5.9c3.8,3.7,6.2,8.7,6.2,14.3v58.4h31.3v-61.5c0-14.3-5.8-25.9-15.2-34ZM680.8,68.8c-4.3,0-8.2,1.8-11.1,4.6-2.8,2.8-4.6,6.8-4.6,11.1s1.8,8.2,4.6,11.1c2.8,2.8,6.8,4.6,11.1,4.6s8.2-1.8,11.1-4.6c2.8-2.8,4.6-6.8,4.6-11.1s-1.8-8.2-4.6-11.1c-2.8-2.8-6.8-4.6-11.1-4.6ZM1017.2,178c-.2,3.6-1.7,6.8-4,9.1-2.5,2.5-5.9,4-9.8,4s-7.3-1.6-9.8-4c-2.5-2.5-4-6-4-9.8v-6.4h0v-28.1h50.1v-31.3h-50.1v-34h-31.4v93.5h0v6.4c0,12.5,5.1,23.8,13.3,32,8.2,8.2,19.5,13.3,32,13.3s23.8-5.1,32-13.3c8-8.1,13.1-19.1,13.2-31.3h-31.4ZM818.8,145.5c2.8,6.6,4.4,14,4.4,21.6v25.9s0,25.9,0,25.9c0,15.3-6.2,29.2-16.3,39.2-10,10-23.9,16.3-39.2,16.3h-33v-31.2h33c6.7,0,12.8-2.7,17.1-7.1,4.4-4.4,7.1-10.5,7.1-17.1v-1.8c-3.7,1.8-7.5,3.2-11.6,4.1-4,.9-8.3,1.5-12.6,1.5-7.7,0-15-1.6-21.6-4.4-6.6-2.8-12.6-6.9-17.7-11.9-5-5-9.1-11-11.9-17.7-2.8-6.6-4.4-13.9-4.4-21.6s1.5-15,4.4-21.6c2.8-6.6,6.9-12.6,11.9-17.7,5-5,11-9.1,17.7-11.9,6.6-2.8,13.9-4.4,21.6-4.4s15,1.6,21.6,4.4c6.6,2.8,12.6,6.9,17.7,11.9,5,5,9.1,11,11.9,17.7ZM791.9,167.1c0-3.3-.7-6.5-1.9-9.4-1.2-2.9-3-5.5-5.2-7.7-2.2-2.2-4.8-4-7.7-5.2-2.9-1.2-6.1-1.9-9.4-1.9s-6.5.7-9.4,1.9c-2.9,1.2-5.5,3-7.7,5.2-2.2,2.2-4,4.8-5.2,7.7-1.2,2.9-1.9,6.1-1.9,9.4s.7,6.5,1.9,9.4c1.2,2.9,3,5.5,5.2,7.7,2.2,2.2,4.8,4,7.7,5.2,2.9,1.2,6.1,1.9,9.4,1.9s6.5-.7,9.4-1.9c2.9-1.2,5.5-3,7.7-5.2,2.2-2.2,4-4.8,5.2-7.7,1.2-2.9,1.9-6.1,1.9-9.4Z"/>
+        <path fill="url(#bright-logo-gradient-launch)" d="M262.9,188.3l99.1-57.3-15.7-27.1-99.1,57.2,57.3-99.1-27.1-15.7-57.2,99.1V37.7h-31.3v107.8l-57.3-99.2-27.2,15.7,57.2,99.1-99.1-57.2-15.6,27.1,99.1,57.2H31.5v31.3h135.8c-6.3-20.5,5.2-42.3,25.7-48.6s42.3,5.2,48.6,25.7c2.3,7.5,2.3,15.4,0,22.9h135.8v-31.3h-114.5Z"/>
+      </svg>
+    </div>
+
+    <!-- ═══ CONTENT SHOTS (universal fade-out transitions + element reveals) ═══ -->
+
+    <!--
+      Timeline — 6 shots (3-element rule applied) + outro:
+        Shot 1 — Title              (0–3s)
+        Shot 2 — Problem            (2.5–6.5s)        heading + subhead (arrows)
+        Shot 3 — Before Brokk stat  (6–9.5s)          number alone "3"
+        Shot 4 — With Brokk stat    (9–12.5s)         number alone "30s"
+        Shot 5 — How it works       (12–17s)          step sequence
+        Shot 6 — CTA                (16.5–22.6s)      heading held to outro
+        Outro — MP4                 (22.6–25.44s)     hard cut
+    -->
+
+    <div id="wrap-shot-1" class="shot-wrap"
+         data-composition-src="compositions/shot-1-title.html"
+         data-composition-id="shot-1-title"
+         data-start="0" data-duration="3"
+         data-track-index="1"></div>
+
+    <div id="wrap-shot-2" class="shot-wrap"
+         data-composition-src="compositions/shot-2-problem.html"
+         data-composition-id="shot-2-problem"
+         data-start="2.5" data-duration="4"
+         data-track-index="2"></div>
+
+    <div id="wrap-shot-3" class="shot-wrap"
+         data-composition-src="compositions/shot-3-before-stat.html"
+         data-composition-id="shot-3-before-stat"
+         data-start="6" data-duration="3.5"
+         data-track-index="1"></div>
+
+    <div id="wrap-shot-4" class="shot-wrap"
+         data-composition-src="compositions/shot-3-solution.html"
+         data-composition-id="shot-3-solution"
+         data-start="9" data-duration="3.5"
+         data-track-index="2"></div>
+
+    <div id="wrap-shot-5" class="shot-wrap"
+         data-composition-src="compositions/shot-4-howitworks.html"
+         data-composition-id="shot-4-howitworks"
+         data-start="12" data-duration="5"
+         data-track-index="1"></div>
+
+    <div id="wrap-shot-6" class="shot-wrap"
+         data-composition-src="compositions/shot-5-cta.html"
+         data-composition-id="shot-5-cta"
+         data-start="16.5" data-duration="6.1"
+         data-track-index="2"></div>
+
+    <!-- ═══ OUTRO — always on top, hard cut ═══ -->
+    <div id="wrap-outro"
+         data-composition-src="compositions/outro.html"
+         data-composition-id="outro"
+         data-start="22.6" data-duration="2.84"
+         data-track-index="3" style="z-index: 100"></div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    // ═══ DOT-WAVE BACKGROUND — canvas grid of green dots with a moving brightness wave ═══
+    //   Halftone-style field. Each dot's opacity + size is modulated by a sine wave
+    //   whose center drifts across the frame over time. Deterministic (no Math.random).
+    var bgCanvas = document.getElementById('bg-dots');
+    var bgCtx = bgCanvas.getContext('2d');
+    var DOT_SPACING = 10;       // tighter grid → smaller dots, more of them
+    var BG_DOT_COLOR_R = 23, BG_DOT_COLOR_G = 201, BG_DOT_COLOR_B = 95;  // Malachite #17C95F
+
+    function drawDotWave(t) {
+      bgCtx.clearRect(0, 0, 1920, 1080);
+      // Wave center drifts diagonally over time
+      var waveX = 960 + Math.sin(t * 0.45) * 700;
+      var waveY = 540 + Math.cos(t * 0.32) * 350;
+      // Second wave for richer texture
+      var wave2X = 960 + Math.cos(t * 0.28) * 500;
+      var wave2Y = 540 + Math.sin(t * 0.55) * 250;
+
+      var cols = Math.ceil(1920 / DOT_SPACING);
+      var rows = Math.ceil(1080 / DOT_SPACING);
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          var x = c * DOT_SPACING + DOT_SPACING / 2;
+          var y = r * DOT_SPACING + DOT_SPACING / 2;
+
+          var d1 = Math.hypot(x - waveX, y - waveY);
+          var d2 = Math.hypot(x - wave2X, y - wave2Y);
+          // Lower frequency = wider bright/dark zones (bigger "blobs")
+          var w1 = Math.sin(d1 * 0.006 - t * 1.2);
+          var w2 = Math.sin(d2 * 0.005 - t * 0.95);
+          var combined = (w1 + w2) / 2;          // -1 .. 1
+
+          var brightness = Math.max(0, combined * 0.5 + 0.35);
+          if (brightness < 0.02) continue;
+          // Smaller dot radius: max ~2.3px instead of 4.7px
+          var radius = 0.5 + brightness * 1.5;
+          var alpha = brightness * 0.7;
+
+          bgCtx.fillStyle = 'rgba(' + BG_DOT_COLOR_R + ',' + BG_DOT_COLOR_G + ',' + BG_DOT_COLOR_B + ',' + alpha + ')';
+          bgCtx.beginPath();
+          bgCtx.arc(x, y, radius, 0, Math.PI * 2);
+          bgCtx.fill();
+        }
+      }
+    }
+
+    // Drive the wave deterministically through the composition timeline.
+    var dotProxy = { t: 0 };
+    tl.to(dotProxy, {
+      t: 22.6, duration: 22.6, ease: 'none',
+      onUpdate: function() { drawDotWave(dotProxy.t); }
+    }, 0);
+
+    // ═══ HIDE BRAND LAYER AT OUTRO ═══
+    tl.set(['#brand-grid', '#bg-wrap', '#brand-logo'], { opacity: 0 }, 22.6);
+
+    window.__timelines['main'] = tl;
+  </script>
+</body>
+</html>

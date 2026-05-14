@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <link rel="stylesheet" href="../lib/fonts/figtree.css">
+  <link rel="stylesheet" href="../lib/styles/glass.css">
+  <script src="../lib/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'Figtree', system-ui, sans-serif;
+    }
+    #content-wrap { position: absolute; inset: 0; will-change: opacity; }
+
+    /* Step sequence — auto-centered */
+
+    #s4-section {
+      position: absolute; top: 88px; left: 96px;
+      font-size: 15px; font-weight: 300; font-style: italic;
+      color: #838A96;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      opacity: 0; z-index: 12;
+    }
+
+    .step-sequence {
+      position: absolute;
+      top: 50%; left: 96px; right: 96px;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 15;
+    }
+    /* Glass surface comes from .glass-card in lib/styles/glass.css.
+       This rule only covers layout + the GSAP initial state. */
+    .step-card {
+      flex: 1 1 0;
+      max-width: 440px;
+      min-width: 240px;
+      height: 240px;
+      padding: 40px 44px;
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    .step-text {
+      font-family: 'Figtree', system-ui, sans-serif;
+      font-size: 35px;
+      font-weight: 400;
+      color: #13132D;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .step-connector {
+      flex: 0 0 48px;
+      height: 2px;
+      background: #15A450;
+      opacity: 0.55;
+      transform-origin: left;
+      transform: scaleX(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"
+       data-composition-id="shot-4-howitworks"
+       data-start="0" data-duration="5"
+       data-width="1920" data-height="1080">
+
+    <div id="content-wrap"><div id="s4-section" data-hf-text-key="child:0:div">HOW IT WORKS</div></div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    tl.fromTo('#s4-section', { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out' }, 0);
+
+    var cards = document.querySelectorAll('.step-sequence .step-card');
+    var connectors = document.querySelectorAll('.step-sequence .step-connector');
+
+    cards.forEach(function(card, i) {
+      tl.to(card,
+        { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(1.4)' },
+        0.3 + i * 0.28);
+    });
+    connectors.forEach(function(conn, i) {
+      tl.to(conn,
+        { scaleX: 1, duration: 0.32, ease: 'power2.out' },
+        0.3 + (i + 1) * 0.28 - 0.08);
+    });
+
+    // Exit fade-out
+    tl.to('#content-wrap', { opacity: 0, duration: 1.0, ease: 'power2.inOut' }, 4.0);
+
+    window.__timelines['shot-4-howitworks'] = tl;
+  </script>
+</body>
+</html>

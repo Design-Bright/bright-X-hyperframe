@@ -1,0 +1,26 @@
+/*
+ * Figtree variable font — bundled locally for offline use.
+ * Substitutes for Gilroy (which is paid/licensed) per the Bright brand guide.
+ *
+ * Usage in compositions:
+ *   <link rel="stylesheet" href="../lib/fonts/figtree.css">
+ *   font-family: 'Figtree', system-ui, sans-serif;
+ */
+
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 300 900;   /* variable axis */
+  font-display: swap;
+  src: url('Figtree.woff2') format('woff2-variations'),
+       url('Figtree.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Figtree';
+  font-style: italic;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url('Figtree-Italic.woff2') format('woff2-variations'),
+       url('Figtree-Italic.woff2') format('woff2');
+}
