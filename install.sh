@@ -16,6 +16,21 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DEST="$HOME/.claude/skills/bright-hyperframes"
 HYPERFRAMES_VERSION="0.6.4"
 
+# ─── Flags ────────────────────────────────────────────────────────────
+# --yes / -y / --non-interactive  : skip confirmation prompt (for AI agents
+#                                   and CI). The pre-flight estimate still
+#                                   prints so the user sees what's happening.
+ASSUME_YES=0
+for arg in "$@"; do
+  case "$arg" in
+    --yes|-y|--non-interactive) ASSUME_YES=1 ;;
+    --help|-h)
+      echo "Usage: ./install.sh [--yes|-y]"
+      echo "  --yes, -y    Skip the confirmation prompt (non-interactive)"
+      exit 0 ;;
+  esac
+done
+
 # ─── ASCII art ────────────────────────────────────────────────────────
 cat <<'ART'
 
@@ -95,12 +110,16 @@ echo ""
 echo "  Total: ~${ESTIMATE_SECS} seconds (one time)"
 echo ""
 
-# ─── Confirm ──────────────────────────────────────────────────────────
-read -r -p "Proceed with install? [y/N] " reply
-case "$reply" in
-  [yY]|[yY][eE][sS]) ;;
-  *) echo "Aborted."; exit 0 ;;
-esac
+# ─── Confirm (unless --yes) ───────────────────────────────────────────
+if [ "$ASSUME_YES" = "1" ]; then
+  echo "Proceeding (--yes flag set) ..."
+else
+  read -r -p "Proceed with install? [y/N] " reply
+  case "$reply" in
+    [yY]|[yY][eE][sS]) ;;
+    *) echo "Aborted."; exit 0 ;;
+  esac
+fi
 
 echo ""
 echo "ACTION"

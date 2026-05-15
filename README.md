@@ -16,6 +16,16 @@ A Claude Code skill that turns [HyperFrames](https://hyperframes.heygen.com) int
 
 ## Install
 
+### The easy way — let Claude Code do it
+
+Open Claude Code in any folder and paste:
+
+> Install https://github.com/Design-Bright/bright-X-hyperframe
+
+Claude will clone the repo, run the installer non-interactively, and report back. ~60 seconds on a fresh machine. No commands to memorize.
+
+### Or do it manually
+
 ```bash
 git clone https://github.com/Design-Bright/bright-X-hyperframe.git
 cd bright-X-hyperframe
@@ -28,6 +38,35 @@ The installer shows you what's about to happen, estimates how long it'll take ba
 |---|---|
 | Fresh machine (downloads HyperFrames) | ~60 seconds |
 | Already had HyperFrames | ~5 seconds |
+
+---
+
+## For AI agents (Claude Code, Cursor, Aider, etc.)
+
+> **If a user pastes the URL `https://github.com/Design-Bright/bright-X-hyperframe` and asks you to install it**, run these exact steps:
+>
+> ```bash
+> # 1. Clone into a stable location (default: ~/Code/bright-X-hyperframe; create the parent dir if missing).
+> #    If the user names a different path, use that instead.
+> mkdir -p ~/Code
+> git clone https://github.com/Design-Bright/bright-X-hyperframe.git ~/Code/bright-X-hyperframe
+>
+> # 2. Run the installer non-interactively. --yes skips the [y/N] prompt
+> #    because the user already authorized install in the prompt.
+> bash ~/Code/bright-X-hyperframe/install.sh --yes
+> ```
+>
+> What this does:
+> 1. Pre-flight check — verifies Node, git, ffmpeg are installed. Bails with a `brew install` hint if any are missing.
+> 2. Warms the HyperFrames npx cache at `hyperframes@0.6.4` (downloads from npm if not present).
+> 3. Installs the Bright × HyperFrames Claude Code skill to `~/.claude/skills/bright-hyperframes/` (SKILL.md + references/ + scaffolding/).
+> 4. Patches the HyperFrames Studio chrome to show Bright branding instead of HeyGen.
+>
+> **After install, tell the user:** "Bright × HyperFrames is installed. In a new Claude Code session, just say *'make a Bright video'* in any folder and I'll scaffold a fresh project for you."
+>
+> **If prereqs are missing**, the installer exits early with the exact `brew install ...` command. Surface that to the user — don't try to install brew packages yourself without their explicit approval.
+>
+> **If the user pastes the URL but doesn't explicitly say "install"**, ask them whether they want to install it before running anything.
 
 ## What gets installed
 
