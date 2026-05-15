@@ -1,107 +1,126 @@
-# Bright × HyperFrames — starter template
+# Bright × HyperFrames
 
-The Bright Money design system, pre-wired into a [HyperFrames](https://hyperframes.heygen.com) project so anyone on the team can create a brand-conformant motion-graphics video in under a day.
+A Claude Code skill that turns [HyperFrames](https://hyperframes.heygen.com) into a Bright-branded video production environment. After install, ask Claude to *"make a Bright video"* in any folder — the skill scaffolds a HyperFrames project with the Bright design system, brand-locked motion layer, glass-card utility, and a Studio chrome patch that replaces HeyGen branding with Bright.
 
-Includes brand-locked layers (animated green dot canvas, Bright logo, Figtree typography), the [Bright design spec](DESIGN.md), reusable glass-card UI, a local TTS narration pipeline (VibeVoice), and a patch that swaps the HeyGen Studio logo for the Bright logo so teammates never see the HeyGen branding.
+```
+ ██████╗ ██████╗ ██╗ ██████╗ ██╗  ██╗████████╗
+ ██╔══██╗██╔══██╗██║██╔════╝ ██║  ██║╚══██╔══╝
+ ██████╔╝██████╔╝██║██║  ███╗███████║   ██║
+ ██╔══██╗██╔══██╗██║██║   ██║██╔══██║   ██║
+ ██████╔╝██║  ██║██║╚██████╔╝██║  ██║   ██║
+ ╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝  ╚═╝
+                                              × HYPERFRAMES
+```
 
 ---
 
-## Make your first video
+## Install
 
 ```bash
-# 1. Clone
-git clone https://github.com/Design-Bright/bright-X-hyperframe.git my-video
-cd my-video
-
-# 2. One-time setup — installs VibeVoice locally (~7–9 GB, ~10–15 min)
-#    Skip this if you only want to preview/edit the visuals.
-npm run setup
-
-# 3. Edit the example shot — see compositions/shot-example.html for the patterns
-#    See DESIGN.md before changing colors, type, or layout.
-
-# 4. Preview in the studio
-npm run dev
-
-# 5. (optional) Write your narration in lib/voiceover/script.txt, then:
-npm run tts
-#    After your first `npm run tts`, uncomment the <audio id="voiceover">
-#    block in index.html to wire it into the timeline.
-
-# 6. Render to MP4
-npm run render
+git clone https://github.com/Design-Bright/bright-X-hyperframe.git
+cd bright-X-hyperframe
+./install.sh
 ```
 
-> The `npm run setup` step downloads PyTorch + the VibeVoice model — **~7–9 GB on disk, ~10–15 min on first run**. If you only want to edit visuals without voiceover, you can skip setup entirely and run `npm run dev` directly.
+The installer shows you what's about to happen, estimates how long it'll take based on what's already cached on your machine, then asks for confirmation. Typical time:
 
----
-
-## What's in the template
-
-```
-.
-├── index.html               # root composition — timeline, dot canvas, brand layer, audio tracks
-├── compositions/
-│   ├── shot-example.html    # heavily-commented example shot showing the brand patterns
-│   └── outro.html           # branded end card (MP4 playback)
-├── lib/
-│   ├── fonts/               # Figtree (Bright's brand typeface substitute)
-│   ├── gsap.min.js
-│   ├── music/               # bg music library — drop in more tracks here
-│   ├── outros/Outro.mp4     # branded outro MP4
-│   ├── voiceover/           # narration script + generated audio
-│   ├── styles/glass.css     # reusable frosted-glass utility (.glass-card)
-│   ├── svg/                 # reusable inline SVG snippets (e.g. liquid filter)
-│   └── bright-favicon.svg   # tab icon used by the studio patch
-├── scripts/
-│   ├── patch-studio-logo.mjs    # replaces HeyGen lockup with Bright logo in the HyperFrames studio
-│   └── vibevoice/               # VibeVoice TTS — setup + generate
-├── DESIGN.md                # Bright brand system spec — colors, type, layouts, voice/tone
-├── CLAUDE.md / AGENTS.md    # AI-agent guidance for editing this project
-└── package.json
-```
-
-## npm scripts
-
-| Command | What it does |
+| | Time |
 |---|---|
-| `npm run setup` | One-time install of VibeVoice TTS (Python venv + model) |
-| `npm run dev` | Launch the HyperFrames studio in your browser to edit and preview |
-| `npm run check` | Lint + validate + inspect all composition HTML |
-| `npm run render` | Render to `renders/*.mp4` |
-| `npm run publish` | Publish to a shareable HyperFrames link |
-| `npm run tts` | Regenerate `lib/voiceover/narration.wav` from `lib/voiceover/script.txt` |
-| `npm run patch-logo` | Re-apply the Bright logo patch to the studio chrome (runs automatically before dev/render/publish) |
+| Fresh machine (downloads HyperFrames) | ~60 seconds |
+| Already had HyperFrames | ~5 seconds |
 
-## Where to learn the patterns
+## What gets installed
 
-- **[DESIGN.md](DESIGN.md)** — the brand spec. Read this before any visual change.
-- **[compositions/shot-example.html](compositions/shot-example.html)** — heavily-commented example shot. Copy this as a starting point for new shots.
-- **[lib/styles/README.md](lib/styles/README.md)** — glass-card utility usage.
-- **[scripts/vibevoice/README.md](scripts/vibevoice/README.md)** — voice options, tuning, uninstall.
-- **[CLAUDE.md](CLAUDE.md) / [AGENTS.md](AGENTS.md)** — guidance for AI agents like Claude Code working in this project.
+1. **HyperFrames CLI** — fetched from npm via `npx`, cached in `~/.npm/_npx/`
+2. **Bright × HyperFrames skill** — copied to `~/.claude/skills/bright-hyperframes/`
+3. **Studio chrome patch** — applied to the cached HyperFrames Studio bundle so the Bright logo appears in the editor's navbar and tab favicon, instead of HeyGen's
 
-## How to add a shot
+The skill bundles:
+- The **brand design spec** (`DESIGN.md`) — colors, typography, layouts, voice/tone
+- **Brand-locked motion layer** — animated green dot canvas + persistent Bright logo
+- **Reusable assets** — Figtree fonts, GSAP, glass-card utility, SVG filters, default music track, branded outro MP4
+- **Auto-patching scripts** — every `npm run dev/check/render/publish` re-applies the Studio chrome patch automatically, so HeyGen branding can't sneak back after a version bump
 
-1. Copy `compositions/shot-example.html` to `compositions/your-name.html`
-2. Edit the content + animation
-3. In `index.html`, add a wrapper `<div>` referencing your file with `data-composition-src`, `data-composition-id`, `data-start`, `data-duration`, `data-track-index`
-4. Bump the root `data-duration`, the bg-music duration, and the outro `data-start` to fit
-5. `npm run check` to lint
+## Use it
+
+After install, open Claude Code in any folder and say:
+
+> "Make a Bright video"
+
+The skill triggers, shows its banner + plan, then scaffolds a fresh HyperFrames project with everything wired up. You edit the shots, hit `npm run dev` to preview, `npm run render` for the MP4.
 
 ## Prereqs
 
-- macOS (Apple Silicon recommended) or Linux with NVIDIA GPU
-- Node 18+ and npm
-- Python 3.10+ (for VibeVoice — only if you want TTS narration)
-- git, ffmpeg
+The installer checks these for you and refuses to proceed if any are missing:
 
-## Known caveats
+| Tool | Why |
+|---|---|
+| **Node.js 18+** | `npx` (the HyperFrames CLI delivery mechanism) |
+| **git** | Cloning + version control |
+| **ffmpeg** | HyperFrames render |
 
-- **VibeVoice is research-grade.** Microsoft's own disclaimer says it's not recommended for commercial use. Disclose any AI-generated VO when sharing publicly.
-- **Brackets in path names break Python globbing.** If you clone this into a folder with `[` or `]` in the path, the VibeVoice generator handles it via a `/tmp` symlink. Nothing to do, just noting.
-- **HeyGen studio chrome.** The HyperFrames studio (the editor) is HeyGen-branded by default. We patch it to show the Bright logo via `npm run patch-logo`, which runs automatically before every dev/render/publish so teammates never see the original branding.
+Install on macOS:
+
+```bash
+brew install node git ffmpeg
+```
+
+## After-install workflow
+
+The skill is now active in Claude Code. Common requests it handles:
+
+| You say | The skill does |
+|---|---|
+| "Make a Bright video" / "Create a Bright launch video" | Scaffolds a new project from the bundled template |
+| "Add a shot showing X" | Creates a new `compositions/shot-X.html` matching the Bright layout spec |
+| "Add a glass card with copy Y" | Uses the `glass-card` utility from `lib/styles/glass.css` |
+| "What's the brand color?" / brand questions | Pulls from `DESIGN.md` |
+
+For general HyperFrames questions (timing, captions, transitions, audio-reactive animation), it defers to the existing `hyperframes` skill — this skill is the Bright-specific layer on top.
+
+## Re-running install
+
+The installer is idempotent. Run it again any time:
+- HyperFrames releases a new version (re-applies the studio chrome patch to the new bundle)
+- The skill is updated in this repo (refreshes `~/.claude/skills/bright-hyperframes/`)
+
+```bash
+cd bright-X-hyperframe
+git pull
+./install.sh
+```
+
+## Uninstall
+
+```bash
+rm -rf ~/.claude/skills/bright-hyperframes
+```
+
+To also remove the cached HyperFrames CLI:
+
+```bash
+rm -rf ~/.npm/_npx
+```
+
+## Repo layout
+
+```
+.
+├── install.sh                  # the installer (run this)
+├── SKILL.md                    # source of truth for the Claude Code skill
+├── DESIGN.md                   # Bright brand spec — read before any visual change
+├── CLAUDE.md / AGENTS.md       # guidance for AI agents working in scaffolded projects
+├── README.md                   # this file
+├── index.html                  # brand-locked motion layer (gets copied per project)
+├── compositions/
+│   ├── shot-example.html       # heavily-commented starter shot
+│   └── outro.html              # branded end card
+├── lib/                        # reusable assets (fonts, music, logo, glass.css, SVG)
+├── scripts/
+│   └── patch-studio-logo.mjs   # HyperFrames Studio chrome patch
+└── package.json                # npm scripts for scaffolded projects
+```
 
 ## License
 
-Internal Bright Money project. The template is for use by Bright designers and engineers. The VibeVoice model has its own [MIT license](https://github.com/microsoft/VibeVoice/blob/main/LICENSE) plus Microsoft's research-only disclaimer.
+Internal Bright Money project. Built on top of [HyperFrames](https://github.com/heygen-com/hyperframes) (HeyGen's open-source video framework).

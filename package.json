@@ -7,8 +7,6 @@
     "dev": "npm run patch-logo && npx --yes hyperframes@0.6.4 preview",
     "check": "npm run patch-logo && npx --yes hyperframes@0.6.4 lint && npx --yes hyperframes@0.6.4 validate && npx --yes hyperframes@0.6.4 inspect",
     "render": "npm run patch-logo && npx --yes hyperframes@0.6.4 render",
-    "publish": "npm run patch-logo && npx --yes hyperframes@0.6.4 publish",
-    "tts": "./.venv-vibevoice/bin/python scripts/vibevoice/generate.py --script lib/voiceover/script.txt --output lib/voiceover/narration.wav",
-    "setup": "bash scripts/vibevoice/setup.sh"
+    "publish": "npm run patch-logo && npx --yes hyperframes@0.6.4 publish"
   }
 }

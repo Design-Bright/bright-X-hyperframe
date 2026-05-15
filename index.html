@@ -58,17 +58,13 @@
            data-volume="0.5"
            preload="auto"></audio>
 
-    <!-- ═══ VOICEOVER — VibeVoice-Realtime-0.5B (Carter)
-         After `npm run setup` and `npm run tts`, add an <audio> element here:
-           - id            voiceover
-           - src           lib/voiceover/narration.wav
-           - data-start    0
-           - data-duration <length of your generated WAV, in seconds>
-           - data-track-index  4
-           - data-volume   1.0
-           - preload       auto
-         Then bump bg-music + root data-duration if your VO is longer than
-         the current shot. See README "Make your first video" step 5. -->
+    <!-- ═══ VOICEOVER (optional) ═══
+         HyperFrames ships its own Kokoro-based TTS — see
+         `npx hyperframes tts --help` and the `hyperframes-media` skill.
+         After generating audio, add an <audio> element pointing at the WAV
+         file with data-start, data-duration, data-track-index, data-volume,
+         and preload="auto". Bump the bg-music + root data-duration if your
+         narration is longer than the current shot. -->
 
 
     <!-- ═══ BRAND-LOCKED LAYER ═══ -->
