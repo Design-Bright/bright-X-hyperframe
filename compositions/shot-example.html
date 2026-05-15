@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <link rel="stylesheet" href="../lib/fonts/figtree.css">
+  <link rel="stylesheet" href="../lib/styles/glass.css">
+  <script src="../lib/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      background: transparent;          /* let the dot canvas in index.html show through */
+      font-family: 'Figtree', system-ui, sans-serif;
+    }
+    #content-wrap { position: absolute; inset: 0; will-change: opacity; }
+
+    /* ═══ SECTION TITLE — top-left ════════════════════════════════════════
+       Per DESIGN.md spec: 15px, weight 300 italic, #838A96, uppercase,
+       letter-spacing 0.18em. Always at top:88px / left:96px. */
+    #section-title {
+      position: absolute; top: 88px; left: 96px;
+      font-size: 15px; font-weight: 300; font-style: italic;
+      color: #838A96;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      opacity: 0; z-index: 12;
+    }
+
+    /* ═══ HEADLINE — choose a layout from DESIGN.md ═══════════════════════
+       This example uses Layout 2 (heading only). For Layout 1 (heading +
+       number) or Layout 3 (number only), see DESIGN.md and replicate the
+       structure. */
+    #headline {
+      position: absolute; top: 50%; left: 96px;
+      transform: translateY(-50%);
+      width: 1700px;
+      font-size: 144px; font-weight: 700; color: #000;
+      letter-spacing: -0.025em; line-height: 1.0;
+      z-index: 15;
+    }
+    .word { display: inline-block; overflow: visible; }
+    .word > span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(60px);     /* word-rise animation start state */
+      will-change: transform, opacity;
+    }
+    .word + .word { margin-left: 0.18em; }
+  </style>
+</head>
+<body>
+  <div id="root"
+       data-composition-id="shot-example"
+       data-start="0" data-duration="5"
+       data-width="1920" data-height="1080">
+
+    <div id="content-wrap">
+      <!-- Section title — fades in -->
+      <div id="section-title">EXAMPLE SHOT</div>
+
+      <!-- Headline — each word rises with a stagger.
+           Wrap each word in <span class="word"><span>word</span></span>. -->
+      <div id="headline">
+        <span class="word"><span>Your</span></span>
+        <span class="word"><span>headline</span></span>
+        <span class="word"><span>here.</span></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    // Section title — simple fade in
+    tl.fromTo('#section-title', { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out' }, 0);
+
+    // Headline word-rise stagger — house style for all headlines
+    var words = document.querySelectorAll('#headline .word > span');
+    words.forEach(function(w, i) {
+      tl.to(w, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out' }, 0.2 + i * 0.12);
+    });
+
+    // Universal exit fade-out — comment out for the LAST shot before the outro (hard cut)
+    tl.to('#content-wrap', { opacity: 0, duration: 1.0, ease: 'power2.inOut' }, 4.0);
+
+    window.__timelines['shot-example'] = tl;
+  </script>
+</body>
+</html>

@@ -43,31 +43,33 @@
   <div id="root"
        data-composition-id="main"
        data-start="0"
-       data-duration="25.44"
+       data-duration="7.84"
        data-width="1920" data-height="1080"
-       data-note="6 shots + outro. Total 25.44s (extended to fit VibeVoice VO).">
+       data-note="Starter template: 1 example shot + outro. Total 7.84s. Add shots in compositions/ and reference them below.">
 
-    <!-- ═══ BACKGROUND MUSIC — locked random pick (summer-hip-hop)
-         Selected from Assets/Music/. Will NOT change unless you ask.
-         To swap: replace lib/music/<filename>.mp3 and update the src below. -->
+    <!-- ═══ BACKGROUND MUSIC ═══
+         Pick a track from lib/music/ and update src. Volume defaults to 0.5
+         to leave headroom for voiceover. -->
     <audio id="bg-music"
            src="lib/music/summer-hip-hop_main-full.mp3"
            data-start="0"
-           data-duration="25.44"
+           data-duration="7.84"
            data-track-index="0"
            data-volume="0.5"
            preload="auto"></audio>
 
-    <!-- ═══ VOICEOVER — VibeVoice-Realtime-0.5B (Carter). Re-generate:
-         npm run tts   →  ~22.5s, writes lib/voiceover/narration.wav
-         Requires one-time `npm run setup` first (see scripts/vibevoice/README.md). -->
-    <audio id="voiceover"
-           src="lib/voiceover/narration.wav"
-           data-start="0"
-           data-duration="22.6"
-           data-track-index="4"
-           data-volume="1.0"
-           preload="auto"></audio>
+    <!-- ═══ VOICEOVER — VibeVoice-Realtime-0.5B (Carter)
+         After `npm run setup` and `npm run tts`, add an <audio> element here:
+           - id            voiceover
+           - src           lib/voiceover/narration.wav
+           - data-start    0
+           - data-duration <length of your generated WAV, in seconds>
+           - data-track-index  4
+           - data-volume   1.0
+           - preload       auto
+         Then bump bg-music + root data-duration if your VO is longer than
+         the current shot. See README "Make your first video" step 5. -->
+
 
     <!-- ═══ BRAND-LOCKED LAYER ═══ -->
     <div id="brand-grid"></div>
@@ -87,60 +89,32 @@
       </svg>
     </div>
 
-    <!-- ═══ CONTENT SHOTS (universal fade-out transitions + element reveals) ═══ -->
+    <!-- ═══ CONTENT SHOTS ═══════════════════════════════════════════════
+         Each shot is a separate HTML file under compositions/. To add a
+         shot, copy compositions/shot-example.html → compositions/your-name.html,
+         edit the content, then add a wrapper here with:
+           - data-composition-src    path to the file
+           - data-composition-id     unique id (must match the `window.__timelines` key)
+           - data-start              when it appears on the main timeline (s)
+           - data-duration           how long it shows (s)
+           - data-track-index        any integer; alternate between adjacent shots
+                                     (e.g. 1, 2, 1, 2) so they cross-fade cleanly
 
-    <!--
-      Timeline — 6 shots (3-element rule applied) + outro:
-        Shot 1 — Title              (0–3s)
-        Shot 2 — Problem            (2.5–6.5s)        heading + subhead (arrows)
-        Shot 3 — Before Brokk stat  (6–9.5s)          number alone "3"
-        Shot 4 — With Brokk stat    (9–12.5s)         number alone "30s"
-        Shot 5 — How it works       (12–17s)          step sequence
-        Shot 6 — CTA                (16.5–22.6s)      heading held to outro
-        Outro — MP4                 (22.6–25.44s)     hard cut
-    -->
+         Then bump the root `data-duration` (above) and bg-music/voiceover
+         durations to match your new total length. Always end with the outro.
+         ═════════════════════════════════════════════════════════════════ -->
 
     <div id="wrap-shot-1" class="shot-wrap"
-         data-composition-src="compositions/shot-1-title.html"
-         data-composition-id="shot-1-title"
-         data-start="0" data-duration="3"
+         data-composition-src="compositions/shot-example.html"
+         data-composition-id="shot-example"
+         data-start="0" data-duration="5"
          data-track-index="1"></div>
-
-    <div id="wrap-shot-2" class="shot-wrap"
-         data-composition-src="compositions/shot-2-problem.html"
-         data-composition-id="shot-2-problem"
-         data-start="2.5" data-duration="4"
-         data-track-index="2"></div>
-
-    <div id="wrap-shot-3" class="shot-wrap"
-         data-composition-src="compositions/shot-3-before-stat.html"
-         data-composition-id="shot-3-before-stat"
-         data-start="6" data-duration="3.5"
-         data-track-index="1"></div>
-
-    <div id="wrap-shot-4" class="shot-wrap"
-         data-composition-src="compositions/shot-3-solution.html"
-         data-composition-id="shot-3-solution"
-         data-start="9" data-duration="3.5"
-         data-track-index="2"></div>
-
-    <div id="wrap-shot-5" class="shot-wrap"
-         data-composition-src="compositions/shot-4-howitworks.html"
-         data-composition-id="shot-4-howitworks"
-         data-start="12" data-duration="5"
-         data-track-index="1"></div>
-
-    <div id="wrap-shot-6" class="shot-wrap"
-         data-composition-src="compositions/shot-5-cta.html"
-         data-composition-id="shot-5-cta"
-         data-start="16.5" data-duration="6.1"
-         data-track-index="2"></div>
 
     <!-- ═══ OUTRO — always on top, hard cut ═══ -->
     <div id="wrap-outro"
          data-composition-src="compositions/outro.html"
          data-composition-id="outro"
-         data-start="22.6" data-duration="2.84"
+         data-start="5" data-duration="2.84"
          data-track-index="3" style="z-index: 100"></div>
   </div>
 
@@ -195,13 +169,14 @@
 
     // Drive the wave deterministically through the composition timeline.
     var dotProxy = { t: 0 };
+    // Animate to (outro start). When you extend the timeline, update BOTH `t` and `duration` here.
     tl.to(dotProxy, {
-      t: 22.6, duration: 22.6, ease: 'none',
+      t: 5, duration: 5, ease: 'none',
       onUpdate: function() { drawDotWave(dotProxy.t); }
     }, 0);
 
-    // ═══ HIDE BRAND LAYER AT OUTRO ═══
-    tl.set(['#brand-grid', '#bg-wrap', '#brand-logo'], { opacity: 0 }, 22.6);
+    // ═══ HIDE BRAND LAYER AT OUTRO ═══ (time = outro start)
+    tl.set(['#brand-grid', '#bg-wrap', '#brand-logo'], { opacity: 0 }, 5);
 
     window.__timelines['main'] = tl;
   </script>

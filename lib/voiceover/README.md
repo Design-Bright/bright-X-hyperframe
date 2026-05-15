@@ -1,29 +1,42 @@
 # Voiceover
 
-Both files in this folder are checked in:
-- `script.txt` — the narration script (edit this, then regenerate)
-- `narration.wav` — the rendered audio (wired into `index.html` as the VO track)
+Two files live in this folder:
+- `script.txt` — your narration script (edit this, then regenerate)
+- `narration.wav` — the rendered audio (gitignored once first generated; wire it into `index.html` as the VO track)
 
-## Regenerate after editing the script
+On a fresh clone, only `script.txt` exists. Run `npm run setup` once, then `npm run tts` to produce `narration.wav`.
+
+## Workflow
 
 ```bash
-npm run tts
-```
+# 1. Edit your script
+$EDITOR lib/voiceover/script.txt
 
-Writes a fresh `narration.wav`. The HTML wiring already points at this path, so reload the studio after regenerating.
+# 2. Regenerate the WAV
+npm run tts
+
+# 3. (first time only) Uncomment the <audio id="voiceover"> block in
+#    index.html so the timeline picks up the file.
+```
 
 ## Engine
 
-VibeVoice-Realtime-0.5B (Carter voice) via local inference on Apple Silicon (MPS) or NVIDIA (CUDA).
+VibeVoice-Realtime-0.5B (default voice: `Carter`) via local inference on Apple Silicon (MPS) or NVIDIA (CUDA).
 
-**Requires a one-time setup** — see [`../../scripts/vibevoice/README.md`](../../scripts/vibevoice/README.md) for the install command, hardware costs, and how to switch voices (Davis, Frank, Mike, Emma, Grace, etc.).
+**Requires `npm run setup` first.** See [`../../scripts/vibevoice/README.md`](../../scripts/vibevoice/README.md) for install costs, hardware requirements, and how to switch voices (Davis, Frank, Mike, Emma, Grace, etc.).
 
-## Timing budget
+## Timing
 
-- Total video duration: 25.44s
-- VO budget: 0–22.6s (outro MP4 covers the last 2.84s)
-- Current VO render: ~22.5s
-- If you edit the script and it overruns 22.6s, update `data-duration` on the `#voiceover` element in `index.html` and shift the outro accordingly.
+Your VO duration drives your timeline. After regenerating, check the WAV duration:
+
+```bash
+python3 -c "import wave; w=wave.open('lib/voiceover/narration.wav'); print(f'{w.getnframes()/w.getframerate():.2f}s')"
+```
+
+Then update in `index.html`:
+- The `<audio id="voiceover">` element's `data-duration`
+- The root `data-duration` and bg-music `data-duration` (must cover VO + outro)
+- The outro `data-start` (so it begins after VO ends)
 
 ## Script-writing voice (from DESIGN.md)
 
@@ -35,4 +48,4 @@ VibeVoice-Realtime-0.5B (Carter voice) via local inference on Apple Silicon (MPS
 - American vernacular only
 - No formal openings ("Welcome to…")
 
-⚠️ VibeVoice note: short inputs of 3 words or fewer can degrade stability. The current script's shortest line is "Meet Brokk." (2 words) — if it sounds off, expand it.
+⚠️ VibeVoice note: short inputs of 3 words or fewer can degrade stability. Keep lines at 4+ words when possible, or expand short ones.

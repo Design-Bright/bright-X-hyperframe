@@ -6,6 +6,9 @@
 # Render outputs
 renders/
 
+# Generated narration (re-created by `npm run tts`)
+lib/voiceover/narration.wav
+
 # VibeVoice opt-in (heavy — installed per machine via scripts/vibevoice/setup.sh)
 .venv-vibevoice/
 vendor/
