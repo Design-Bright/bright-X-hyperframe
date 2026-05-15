@@ -9,7 +9,7 @@ description: Scaffold and edit Bright Money brand-conformant motion-graphics vid
 
 The **first time** this skill is invoked in a conversation, your VERY FIRST output to the user MUST be:
 
-1. The full ASCII art block below, **verbatim, wrapped in an HTML `<pre>` tag with Bright Sandstone orange (`#FC712B`) styling** so it renders in brand color when the chat client supports HTML. If the renderer strips HTML, the art still appears in default color — that's an acceptable fallback.
+1. The full ASCII art block below, **verbatim, inside a fenced code block** so it renders monospace.
 2. A `PROJECT PLAN` section listing the numbered steps you intend to take for this request.
 3. An `ACTION` section before you begin executing tools.
 
@@ -24,10 +24,7 @@ Quick decision tree:
 
 ### The art
 
-Emit this exact HTML block (the inline `style` carries the brand color):
-
-```html
-<pre style="color: #FC712B; font-weight: bold;">
+````
  ██████╗ ██████╗ ██╗ ██████╗ ██╗  ██╗████████╗
  ██╔══██╗██╔══██╗██║██╔════╝ ██║  ██║╚══██╔══╝
  ██████╔╝██████╔╝██║██║  ███╗███████║   ██║   
@@ -49,10 +46,7 @@ Emit this exact HTML block (the inline `style` carries the brand color):
  ██║  ██║   ██║   ██║     ███████╗██║  ██║██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗
  ╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
 > made by kill_bill
-</pre>
-```
-
-Emit the `<pre>...</pre>` block as raw markup — DO NOT wrap it in a triple-backtick code fence. The chat client renders the HTML directly when it supports inline style; otherwise it falls back to monospace black/white.
+````
 
 ---
 
