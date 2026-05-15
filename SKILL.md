@@ -70,10 +70,11 @@ When the user says "make a Bright video" / "create a Bright launch video" / simi
 
 1. Confirm the target folder (current working dir, or ask for a new name)
 2. Copy the scaffolding from `~/.claude/skills/bright-hyperframes/scaffolding/` into that folder
-3. Run `npm run patch-logo` to seed the studio chrome patch on first dev run
-4. Tell the user: edit `compositions/shot-example.html` as the starting point, add more shots, run `npm run dev` to preview
+3. Tell the user: edit `compositions/shot-example.html` as the starting point, add more shots, run `npm run dev` to preview
 
 Use `cp -R ~/.claude/skills/bright-hyperframes/scaffolding/. <target-folder>/` for the copy. Hidden files (`.claude/`, `.gitignore`) must come along — the trailing `.` in the source path is important.
+
+**Do NOT run `npm run patch-logo` during scaffolding.** The studio chrome patch was already applied globally by `install.sh` when the user installed this skill, AND every `npm run dev/check/render/publish` re-applies it automatically (it's chained in the scaffolded `package.json`). Running it during scaffolding is redundant and triggers an unnecessary permission prompt for compound `cd ... && npm run ...` invocations.
 
 ## Editing an existing Bright HyperFrames project
 
