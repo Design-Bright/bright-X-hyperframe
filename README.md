@@ -132,8 +132,10 @@ git pull
 ## Uninstall
 
 ```bash
-rm -rf ~/.claude/skills/bright-hyperframes
+rm -rf ~/.claude/skills/bright-hyperframes ~/.agents/skills/bright-hyperframes
 ```
+
+The skill is stored at `~/.agents/skills/bright-hyperframes/` and symlinked into `~/.claude/skills/bright-hyperframes/` so Claude Code's slash-command autocomplete picks it up.
 
 To also remove the cached HyperFrames CLI:
 

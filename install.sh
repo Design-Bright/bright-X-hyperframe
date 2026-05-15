@@ -13,7 +13,8 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_DEST="$HOME/.claude/skills/bright-hyperframes"
+SKILL_DEST="$HOME/.agents/skills/bright-hyperframes"
+SKILL_SYMLINK="$HOME/.claude/skills/bright-hyperframes"
 HYPERFRAMES_VERSION="0.6.4"
 
 # ─── Flags ────────────────────────────────────────────────────────────
@@ -133,6 +134,13 @@ echo "    ✅ cached"
 # ─── 2. Install the Claude Code skill ─────────────────────────────────
 echo "  → Installing Claude Code skill at ${SKILL_DEST/$HOME/~} ..."
 mkdir -p "$SKILL_DEST/references" "$SKILL_DEST/scaffolding/compositions" "$SKILL_DEST/scaffolding/lib" "$SKILL_DEST/scaffolding/scripts"
+mkdir -p "$(dirname "$SKILL_SYMLINK")"
+
+# Replace any existing symlink or stale directory at the .claude/skills path
+if [ -e "$SKILL_SYMLINK" ] || [ -L "$SKILL_SYMLINK" ]; then
+  rm -rf "$SKILL_SYMLINK"
+fi
+ln -s "../../.agents/skills/bright-hyperframes" "$SKILL_SYMLINK"
 
 cp "$REPO_ROOT/SKILL.md"     "$SKILL_DEST/SKILL.md"
 cp "$REPO_ROOT/DESIGN.md"    "$SKILL_DEST/references/DESIGN.md"
