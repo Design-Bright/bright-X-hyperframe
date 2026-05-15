@@ -144,8 +144,8 @@ Alternate `data-track-index` between adjacent shots (1, 2, 1, 2) so they cross-f
 ## Brand-locked layer — DO NOT MODIFY
 
 `index.html` has static layers that persist across every shot:
-- Animated **green dot canvas** (Malachite halftone field, drift-animated)
-- **Bright logo** SVG lower-right
+- Animated **green dot canvas** (Malachite halftone field, drift-animated) at `#bg-wrap`
+- **Bright logo** SVG lower-right at `#brand-logo`
 
 Never remove these. If extending the timeline, bump:
 - `#root` `data-duration`
@@ -155,6 +155,35 @@ Never remove these. If extending the timeline, bump:
 - Outro `data-start`
 
 Where `T = total shot time` (just before the outro).
+
+## Z-INDEX HIERARCHY — NON-NEGOTIABLE
+
+The dot-wave gradient is the **lowest visible layer**. It MUST sit behind every shot's content. Common Claude mistake: editing styles in a way that puts the gradient on top of text, or recreating the gradient inside a composition (where it then covers text).
+
+The exact stacking order in `index.html`:
+
+| Element | `z-index` | Role |
+|---|---|---|
+| `#brand-grid` | `0` (currently `display:none`) | Optional 96px grid |
+| `#bg-wrap` (dot canvas) | **`1`** | Animated green dots — must stay at the bottom |
+| `.shot-wrap` (every shot) | **`10`** | All sub-composition wrappers — must stay above dots |
+| `#brand-logo` | `30` | Lower-right Bright logo |
+| `#wrap-outro` (outro wrapper) | `100` (inline) | Final hard-cut to outro MP4 |
+
+### Rules
+
+1. **Never reduce** `.shot-wrap`'s `z-index` below `10`.
+2. **Never raise** `#bg-wrap`'s `z-index` above `1`. The dot canvas is bottom-of-stack and stays there.
+3. **Never recreate the dot gradient inside a composition file.** The dots live exclusively in `index.html`. Each composition uses `background: transparent` on `html, body` so the parent's dot canvas shows through.
+4. **New layers added to `index.html`**: pick a `z-index` between `2` and `9` for things that should sit above the dots but below content, or between `11` and `29` for things above content. Never use `< 2` (collides with `bg-wrap`) or `>= 100` (reserved for outro).
+5. **Adding a `background-color` to body or `#root` in a composition file** will cover the parent dot canvas. Don't do this. If you need a card with a visible background, use the `.glass-card` utility — it tints translucently without occluding the dots.
+
+### Quick correctness check before considering a composition done
+
+- Does `html, body` in the composition file have `background: transparent;`? ✅
+- Does any element inside the composition have `z-index: < 10`? Likely a bug.
+- Does the composition contain its own `#bg-wrap` or duplicate gradient? Remove it.
+- Does the composition cover its full frame with an opaque background? Probably the wrong layout — use a `.glass-card` or just left-justified text.
 
 ## Glass-card utility
 
