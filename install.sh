@@ -62,10 +62,11 @@ ART
 # ─── Pre-flight: prereqs + estimate ───────────────────────────────────
 echo "PROJECT PLAN"
 echo ""
-echo "  1. Check prereqs (Node, git, npx)"
-echo "  2. Install the Claude Code skill at ~/.claude/skills/bright-hyperframes/"
-echo "  3. Warm the HyperFrames npx cache (hyperframes@${HYPERFRAMES_VERSION})"
-echo "  4. Apply Bright Branding"
+echo "  1. Check prereqs (git, ffmpeg)"
+echo "  2. Ensure Node 22 (install via nvm/brew if missing or <22)"
+echo "  3. Install the Claude Code skill at ~/.claude/skills/bright-hyperframes/"
+echo "  4. Warm the HyperFrames npx cache (hyperframes@${HYPERFRAMES_VERSION})"
+echo "  5. Apply Bright Branding"
 echo ""
 
 NEED_HYPERFRAMES_DOWNLOAD=0
@@ -93,20 +94,8 @@ if ! find "$HOME/.npm/_npx" -maxdepth 4 -type d -name "hyperframes" 2>/dev/null 
   ESTIMATE_SECS=$((ESTIMATE_SECS + 30))
 fi
 
-if [ "$NEED_NODE" = "1" ]; then
-  echo "❌  Node.js not found. Install first: brew install node@22"
-  exit 1
-fi
-if [ "$NODE_TOO_OLD" = "1" ]; then
-  echo "⚠️   Heads up: your Node is v${NODE_MAJOR} and HyperFrames wants ≥22."
-  echo "    Lint will pass but \`npm run render\` may complain."
-  if command -v nvm >/dev/null 2>&1 || [ -s "$HOME/.nvm/nvm.sh" ]; then
-    echo "    Fix: nvm install 22 && nvm use 22"
-  else
-    echo "    Fix: brew install node@22 && brew link --overwrite node@22"
-  fi
-  echo ""
-fi
+# Note: Node 22 install (if needed) happens in the ACTION phase below.
+# Pre-flight only flags whether it's required so the estimate is honest.
 if [ "$NEED_GIT" = "1" ]; then
   echo "❌  git not found. Install first: xcode-select --install"
   exit 1
@@ -118,11 +107,16 @@ fi
 
 echo "ESTIMATE"
 echo ""
-if [ "$NODE_TOO_OLD" = "1" ]; then
-  echo "  • Prereqs: ⚠️  Node $(node --version) — HyperFrames wants ≥22 for render; git, ffmpeg, npx present"
+if [ "$NEED_NODE" = "1" ]; then
+  echo "  • Node: ❌ not installed — will install Node 22 (~30s via nvm, ~1–3 min via brew)"
+  ESTIMATE_SECS=$((ESTIMATE_SECS + 60))
+elif [ "$NODE_TOO_OLD" = "1" ]; then
+  echo "  • Node: ⚠️  current $(node --version) — will upgrade to 22 (~30s via nvm)"
+  ESTIMATE_SECS=$((ESTIMATE_SECS + 30))
 else
-  echo "  • Prereqs: ✅ Node $(node --version), git, ffmpeg, npx all present"
+  echo "  • Node: ✅ $(node --version)"
 fi
+echo "  • Other prereqs: ✅ git, ffmpeg, npx present"
 if [ "$NEED_HYPERFRAMES_DOWNLOAD" = "1" ]; then
   echo "  • HyperFrames (~30 MB): will download from npm registry (~20–40s)"
 else
@@ -149,7 +143,44 @@ echo ""
 echo "ACTION"
 echo ""
 
-# ─── 1. Warm the hyperframes cache ────────────────────────────────────
+# ─── 1. Ensure Node 22 ────────────────────────────────────────────────
+if [ "$NEED_NODE" = "1" ] || [ "$NODE_TOO_OLD" = "1" ]; then
+  echo "  → Installing Node 22 ..."
+  INSTALL_METHOD=""
+
+  # Prefer nvm — non-destructive, coexists with other Node versions
+  if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    # shellcheck disable=SC1091
+    \. "$HOME/.nvm/nvm.sh"
+    if nvm install 22 >/dev/null 2>&1 && nvm use 22 >/dev/null 2>&1 && nvm alias default 22 >/dev/null 2>&1; then
+      INSTALL_METHOD="nvm"
+      hash -r 2>/dev/null || true
+    fi
+  fi
+
+  # Fall back to brew if nvm didn't work
+  if [ -z "$INSTALL_METHOD" ] && command -v brew >/dev/null 2>&1; then
+    if brew install node@22 >/dev/null 2>&1 && brew link --overwrite --force node@22 >/dev/null 2>&1; then
+      INSTALL_METHOD="brew"
+      export PATH="$(brew --prefix node@22)/bin:$PATH"
+      hash -r 2>/dev/null || true
+    fi
+  fi
+
+  if [ -z "$INSTALL_METHOD" ]; then
+    echo "    ❌ couldn't install Node 22 automatically (no nvm, no brew)"
+    echo "       Install Node 22 manually then re-run ./install.sh"
+    exit 1
+  fi
+
+  CURRENT_NODE=$(node --version 2>/dev/null || echo "unknown")
+  echo "    ✅ Node ${CURRENT_NODE} (via ${INSTALL_METHOD})"
+  if [ "$INSTALL_METHOD" = "nvm" ]; then
+    echo "       Set as nvm default. Open a new terminal or 'nvm use 22' in existing ones."
+  fi
+fi
+
+# ─── 2. Warm the hyperframes cache ────────────────────────────────────
 echo "  → Warming hyperframes@${HYPERFRAMES_VERSION} npx cache ..."
 npx --yes hyperframes@${HYPERFRAMES_VERSION} --version >/dev/null 2>&1 || true
 echo "    ✅ cached"
