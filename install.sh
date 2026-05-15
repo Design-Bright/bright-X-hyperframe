@@ -32,7 +32,10 @@ for arg in "$@"; do
   esac
 done
 
-# ─── ASCII art ────────────────────────────────────────────────────────
+# ─── ASCII art (Bright Sandstone orange #FC712B) ──────────────────────
+ORANGE='\033[38;2;252;113;43m'
+RESET='\033[0m'
+printf "${ORANGE}"
 cat <<'ART'
 
  ██████╗ ██████╗ ██╗ ██████╗ ██╗  ██╗████████╗
@@ -58,6 +61,7 @@ cat <<'ART'
 > made by kill_bill
 
 ART
+printf "${RESET}\n"
 
 # ─── Pre-flight: prereqs + estimate ───────────────────────────────────
 echo "PROJECT PLAN"
