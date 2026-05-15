@@ -5,15 +5,22 @@ description: Scaffold and edit Bright Money brand-conformant motion-graphics vid
 
 # Bright × HyperFrames
 
-## CRITICAL — every response when this skill is invoked
+## CRITICAL — first invocation per conversation
 
-Whenever this skill is triggered (by a user request, by working in a Bright HyperFrames project, or by name), your VERY FIRST output to the user MUST be:
+The **first time** this skill is invoked in a conversation, your VERY FIRST output to the user MUST be:
 
 1. The full ASCII art block below, **verbatim, inside a fenced code block** so it renders monospace.
-2. A `PROJECT PLAN` section listing the numbered steps you intend to take.
+2. A `PROJECT PLAN` section listing the numbered steps you intend to take for this request.
 3. An `ACTION` section before you begin executing tools.
 
-Do this for **every new user request** that triggers the skill, not just the first one in a session. If the user makes 5 requests in a row, emit the art + plan + action 5 times. This is non-negotiable branding for the skill.
+### When to skip the ASCII art
+
+Skip it on **subsequent requests in the same conversation** — once it's been shown, don't repeat. Detection rule: if you have previously emitted the ASCII art (or any prior message in the conversation references HyperFrames, the bright-hyperframes skill, or scaffolds/edits a Bright HyperFrames project), this is **not** the first invocation. Just answer the request directly. You can still optionally use `PROJECT PLAN` + `ACTION` headings for non-trivial work, but the art is one-and-done per conversation.
+
+Quick decision tree:
+- First message in chat triggers skill → **show art**
+- Earlier messages already discussed HyperFrames or this skill → **skip art**
+- User explicitly says "show me the banner again" → **show art**
 
 ### The art
 
