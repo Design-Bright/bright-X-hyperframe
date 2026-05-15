@@ -93,14 +93,15 @@ The installer checks these for you and refuses to proceed if any are missing:
 
 | Tool | Why |
 |---|---|
-| **Node.js 18+** | `npx` (the HyperFrames CLI delivery mechanism) |
+| **Node.js 22+** | `npx` (the HyperFrames CLI delivery mechanism). HyperFrames requires ≥22 for render. |
 | **git** | Cloning + version control |
 | **ffmpeg** | HyperFrames render |
 
 Install on macOS:
 
 ```bash
-brew install node git ffmpeg
+brew install node@22 git ffmpeg
+brew link --overwrite node@22   # if you already had an older node
 ```
 
 ## After-install workflow

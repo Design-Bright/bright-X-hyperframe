@@ -72,11 +72,20 @@ NEED_HYPERFRAMES_DOWNLOAD=0
 NEED_NODE=0
 NEED_GIT=0
 NEED_FFMPEG=0
+NODE_TOO_OLD=0
 ESTIMATE_SECS=10
 
 command -v node   >/dev/null 2>&1 || { NEED_NODE=1; }
 command -v git    >/dev/null 2>&1 || { NEED_GIT=1; }
 command -v ffmpeg >/dev/null 2>&1 || { NEED_FFMPEG=1; }
+
+# HyperFrames wants Node ≥22. Render will fail otherwise (lint may still pass).
+if [ "$NEED_NODE" = "0" ]; then
+  NODE_MAJOR=$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
+  if [ "$NODE_MAJOR" -lt 22 ] 2>/dev/null; then
+    NODE_TOO_OLD=1
+  fi
+fi
 
 # Check if hyperframes is already cached
 if ! find "$HOME/.npm/_npx" -maxdepth 4 -type d -name "hyperframes" 2>/dev/null | grep -q .; then
@@ -85,8 +94,18 @@ if ! find "$HOME/.npm/_npx" -maxdepth 4 -type d -name "hyperframes" 2>/dev/null 
 fi
 
 if [ "$NEED_NODE" = "1" ]; then
-  echo "❌  Node.js not found. Install first: brew install node"
+  echo "❌  Node.js not found. Install first: brew install node@22"
   exit 1
+fi
+if [ "$NODE_TOO_OLD" = "1" ]; then
+  echo "⚠️   Heads up: your Node is v${NODE_MAJOR} and HyperFrames wants ≥22."
+  echo "    Lint will pass but \`npm run render\` may complain."
+  if command -v nvm >/dev/null 2>&1 || [ -s "$HOME/.nvm/nvm.sh" ]; then
+    echo "    Fix: nvm install 22 && nvm use 22"
+  else
+    echo "    Fix: brew install node@22 && brew link --overwrite node@22"
+  fi
+  echo ""
 fi
 if [ "$NEED_GIT" = "1" ]; then
   echo "❌  git not found. Install first: xcode-select --install"
@@ -99,7 +118,11 @@ fi
 
 echo "ESTIMATE"
 echo ""
-echo "  • Prereqs: ✅ Node ($(node --version)), git, ffmpeg, npx all present"
+if [ "$NODE_TOO_OLD" = "1" ]; then
+  echo "  • Prereqs: ⚠️  Node $(node --version) — HyperFrames wants ≥22 for render; git, ffmpeg, npx present"
+else
+  echo "  • Prereqs: ✅ Node $(node --version), git, ffmpeg, npx all present"
+fi
 if [ "$NEED_HYPERFRAMES_DOWNLOAD" = "1" ]; then
   echo "  • HyperFrames (~30 MB): will download from npm registry (~20–40s)"
 else
