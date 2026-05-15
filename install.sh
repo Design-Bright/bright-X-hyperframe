@@ -55,10 +55,12 @@ echo ""
 NEED_HYPERFRAMES_DOWNLOAD=0
 NEED_NODE=0
 NEED_GIT=0
+NEED_FFMPEG=0
 ESTIMATE_SECS=10
 
-command -v node >/dev/null 2>&1 || { NEED_NODE=1; }
-command -v git  >/dev/null 2>&1 || { NEED_GIT=1; }
+command -v node   >/dev/null 2>&1 || { NEED_NODE=1; }
+command -v git    >/dev/null 2>&1 || { NEED_GIT=1; }
+command -v ffmpeg >/dev/null 2>&1 || { NEED_FFMPEG=1; }
 
 # Check if hyperframes is already cached
 if ! find "$HOME/.npm/_npx" -maxdepth 4 -type d -name "hyperframes" 2>/dev/null | grep -q .; then
@@ -74,10 +76,14 @@ if [ "$NEED_GIT" = "1" ]; then
   echo "❌  git not found. Install first: xcode-select --install"
   exit 1
 fi
+if [ "$NEED_FFMPEG" = "1" ]; then
+  echo "❌  ffmpeg not found (required for video render). Install: brew install ffmpeg"
+  exit 1
+fi
 
 echo "ESTIMATE"
 echo ""
-echo "  • Prereqs: ✅ Node ($(node --version)), git, npx all present"
+echo "  • Prereqs: ✅ Node ($(node --version)), git, ffmpeg, npx all present"
 if [ "$NEED_HYPERFRAMES_DOWNLOAD" = "1" ]; then
   echo "  • HyperFrames (~30 MB): will download from npm registry (~20–40s)"
 else
