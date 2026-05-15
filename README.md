@@ -1,6 +1,6 @@
 # Bright × HyperFrames
 
-A Claude Code skill that turns [HyperFrames](https://hyperframes.heygen.com) into a Bright-branded video production environment. After install, ask Claude to *"make a Bright video"* in any folder — the skill scaffolds a HyperFrames project with the Bright design system, brand-locked motion layer, glass-card utility, and a Studio chrome patch that replaces HeyGen branding with Bright.
+A Claude Code skill that turns [HyperFrames](https://hyperframes.heygen.com) into a Bright-branded video production environment. After install, ask Claude to *"make a Bright video"* in any folder — the skill scaffolds a HyperFrames project with the Bright design system, brand-locked motion layer, glass-card utility, and Bright Branding throughout the editor.
 
 ```
  ██████╗ ██████╗ ██╗ ██████╗ ██╗  ██╗████████╗
@@ -60,7 +60,7 @@ The installer shows you what's about to happen, estimates how long it'll take ba
 > 1. Pre-flight check — verifies Node, git, ffmpeg are installed. Bails with a `brew install` hint if any are missing.
 > 2. Warms the HyperFrames npx cache at `hyperframes@0.6.4` (downloads from npm if not present).
 > 3. Installs the Bright × HyperFrames Claude Code skill to `~/.claude/skills/bright-hyperframes/` (SKILL.md + references/ + scaffolding/).
-> 4. Patches the HyperFrames Studio chrome to show Bright branding instead of HeyGen.
+> 4. Applies Bright Branding across the editor.
 >
 > **After install, tell the user:** "Bright × HyperFrames is installed. In a new Claude Code session, just say *'make a Bright video'* in any folder and I'll scaffold a fresh project for you."
 >
@@ -72,13 +72,12 @@ The installer shows you what's about to happen, estimates how long it'll take ba
 
 1. **HyperFrames CLI** — fetched from npm via `npx`, cached in `~/.npm/_npx/`
 2. **Bright × HyperFrames skill** — copied to `~/.claude/skills/bright-hyperframes/`
-3. **Studio chrome patch** — applied to the cached HyperFrames Studio bundle so the Bright logo appears in the editor's navbar and tab favicon, instead of HeyGen's
 
 The skill bundles:
 - The **brand design spec** (`DESIGN.md`) — colors, typography, layouts, voice/tone
 - **Brand-locked motion layer** — animated green dot canvas + persistent Bright logo
 - **Reusable assets** — Figtree fonts, GSAP, glass-card utility, SVG filters, default music track, branded outro MP4
-- **Auto-patching scripts** — every `npm run dev/check/render/publish` re-applies the Studio chrome patch automatically, so HeyGen branding can't sneak back after a version bump
+- **Bright Branding** — automatically applied across the editor so every video project shows Bright styling, kept in sync on every preview/render
 
 ## Use it
 
@@ -120,7 +119,7 @@ For general HyperFrames questions (timing, captions, transitions, audio-reactive
 ## Re-running install
 
 The installer is idempotent. Run it again any time:
-- HyperFrames releases a new version (re-applies the studio chrome patch to the new bundle)
+- HyperFrames releases a new version (re-applies Bright Branding to the new bundle)
 - The skill is updated in this repo (refreshes `~/.claude/skills/bright-hyperframes/`)
 
 ```bash
@@ -158,7 +157,7 @@ rm -rf ~/.npm/_npx
 │   └── outro.html              # branded end card
 ├── lib/                        # reusable assets (fonts, music, logo, glass.css, SVG)
 ├── scripts/
-│   └── patch-studio-logo.mjs   # HyperFrames Studio chrome patch
+│   └── patch-studio-logo.mjs   # Bright Branding internals
 └── package.json                # npm scripts for scaffolded projects
 ```
 

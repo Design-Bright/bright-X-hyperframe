@@ -65,7 +65,7 @@ echo ""
 echo "  1. Check prereqs (Node, git, npx)"
 echo "  2. Install the Claude Code skill at ~/.claude/skills/bright-hyperframes/"
 echo "  3. Warm the HyperFrames npx cache (hyperframes@${HYPERFRAMES_VERSION})"
-echo "  4. Patch the HyperFrames Studio chrome to Bright branding"
+echo "  4. Apply Bright Branding"
 echo ""
 
 NEED_HYPERFRAMES_DOWNLOAD=0
@@ -106,7 +106,7 @@ else
   echo "  • HyperFrames: ✅ already cached (will skip download)"
 fi
 echo "  • Skill install: ~2s (copies ~6 MB to ~/.claude/skills/)"
-echo "  • Studio patch:  ~2s (idempotent — runs again if cache changes)"
+echo "  • Bright Branding: ~2s (idempotent — re-applies on every preview/render)"
 echo ""
 echo "  Total: ~${ESTIMATE_SECS} seconds (one time)"
 echo ""
@@ -160,10 +160,10 @@ cp -R "$REPO_ROOT/.claude"        "$SKILL_DEST/scaffolding/" 2>/dev/null || true
 
 echo "    ✅ installed"
 
-# ─── 3. Patch HyperFrames Studio chrome ───────────────────────────────
-echo "  → Patching HyperFrames Studio chrome to Bright branding ..."
+# ─── 3. Apply Bright Branding ─────────────────────────────────────────
+echo "  → Applying Bright Branding ..."
 node "$REPO_ROOT/scripts/patch-studio-logo.mjs" >/dev/null 2>&1 || true
-echo "    ✅ patched (re-runs automatically every npm run dev/check/render/publish)"
+echo "    ✅ applied (kept in sync on every preview/render)"
 
 echo ""
 echo "✅  Bright × HyperFrames installed."
